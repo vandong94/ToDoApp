@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>To Do App | Dong Nguyen</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="/assets/style.css">
+    <script>
+        $(document).ready(function () {
+            $('form').on('submit', function () {
+                var item = $('form input');
+                var todo = {content: item.val()};
+                $.ajax({
+                    type: 'POST',
+                    url: '/todo',
+                    data: todo,
+                    success: function (data) {
+                        location.reload();
+                    }
+                });
+
+                return false;
+            });
+
+            $('li').on('click', function () {
+                var item = $(this).text();
+                
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/todo/' + item,
+                    success: function (data) {
+                        location.reload();
+                    }
+                });
+            });
+        });
+
+        function validateForm(){
+            var content = document.getElementById("content");
+            if(content.value == ""){
+                //alert("Noi dung khong dc de trong");
+                document.getElementById("error").innerHTML = "Content cannot be blank!"
+                return false;
+            }  
+        }
+
+        function MouseOut() {
+            var err = document.getElementById("error");
+            if(err.value != ""){
+                err.innerHTML = "";
+            }
+        }
+        
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div id="to-table">
+                <form action="" method="POST">
+                    <h2 style="text-align: center">ADD TO DO</h2>
+                    <div class="form-group">
+                        <label for="">Content:</label>
+                        <input onkeyup="MouseOut()" onclick="MouseOut()" type="text" class="form-control" id="content" placeholder="Add Content" name="content">
+                        <p style="color: red" id="error"></p>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-default" onclick=" return validateForm()">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3"></div>
+
+        <div class="col-md-6">
+            <h3 style="text-align: center">List work to do.</h3>
+            <% todos.forEach( (result) => { %>
+                <li><%= result.content %></li>       
+            <% }) %>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+</div>
+
+</body>
+</html>
